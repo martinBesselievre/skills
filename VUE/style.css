@@ -1,0 +1,54 @@
+.odd{
+    background-color: gray;
+}
+.even{
+    background-color: lightgray;
+}
+
+.login-form-hide{
+    display: none;
+}
+
+.register-form-hide{
+    display: none;
+}   
+
+.login-form-show{
+    display: block;
+}
+
+.register-form-show{
+    display: block;
+}   
+
+.logout-link-hide{
+    display: none;
+}
+
+.logout-link-show{
+    display: block;
+}
+
+.logged-as-hide{
+    display: none;
+}
+
+.logged-as-show{
+    display: block;
+}
+
+.login-link-show{
+    display: block;
+}
+
+.login-link-hide{
+    display: none;
+}
+
+.register-link-show{
+    display: block;
+}
+
+.register-link-hide{
+    display: hide;
+}

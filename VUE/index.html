@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"/>
+    <title>Cart</title>
+</head>
+<body>
+    <div id="app">
+        <a v-on:click="displayLoginForm">Login</a> <a v-on:click="displayRegisterForm">Register</a> <span :class="loggedAsClass">Logged as : {{profile.firstName}} {{profile.lastName}}</span> <span @click="logout" :class="logoutLinkClass">logout</span>
+        <div>
+            {{message}}
+        </div>
+        <div v-bind:class="loginFormClass">
+            <p>
+                <label for="email">Email</label>
+                <input  
+                    type="email"
+                    placeholder="email"
+                    v-model="user.email"
+                >
+            </p>
+            <p>
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    placeholder="password"
+                    v-model="user.password"
+                >
+            </p>
+        <button v-on:click="login">Login</button>
+        </div> 
+        <div v-bind:class="registerFormClass">
+            <p>
+                <label for="firstname">firstName</label>
+                <input
+                    type="text"
+                    placeholder="firstname"
+                    v-model="profile.firstName"
+                >
+            </p>
+            <p>
+                <label for="lastName">lastName</label>
+                <input
+                    type="text"
+                    placeholder="lastname"
+                    v-model="profile.lastName"
+                >
+            </p>
+            <p>
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    placeholder="email"
+                    v-model="profile.email"
+                >
+            </p>
+            <p>
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    placeholder="password"
+                    v-model="profile.password"
+                >
+            </p>
+        <button v-on:click="register">Register</button>
+        </div>
+        <h1>VueMart</h1>
+        
+        <span>Mon nom est {{stringData}}</span><br><br>
+        <span>Il y a {{numberData}} produits disponibles dans votre magasin.</span><br><br>
+        <span>La valeur du boolean est :  {{booleanData}}</span>
+        <div v-show="visible">
+            <h2>Panier</h2>
+            <ul >
+                <li v-for="(product, index) in products">
+                    <div v-if="index %2 == 0">
+                        <div class="even">
+                            <a v-bind:href="product.url">{{product.name}}:</a>  {{product.price}} €
+                        </div>
+                    </div>
+                    <div v-else>    
+                        <div class="odd">
+                            <a v-bind:href="product.url">{{product.name}}:</a>  {{product.price}} €
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <p>Total: {{totalAmount}} €</p>
+        </div>
+        <button v-on:click="toggleDisplay">Toggle display</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                stringData: 'Martin',
+                numberData: 42,
+                booleanData: false,
+                arrayData: ['Pommes', 'Bananes', 'Noix de coco', 'Oranges', 'Ananas', 'Citrons'],
+                objectData: {
+                    topic: 'VueJS',
+                    length: 5
+                },
+                visible: true,
+                products:[
+                    {name: "Apples", price: 6, url: '/apples.html'},
+                    {name: "Bananas", price: 2, url: '/bananas.html'}, 
+                    {name: "Coconuts", price: 8, url: '/coconuts.html'},
+                    {name: "Oranges", price: 3, url: '/oranges.html'},
+                    {name: "Ananas", price: 5, url: '/ananas.html'},
+                    {name: "Lemons", price: 4, url: '/lemons.html'},
+                ],
+                profiles: [],
+                profile:{
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    password: ""
+                },
+                user:{
+                    email: "",
+                    password: ""
+                },
+                logged: true,
+                message: '',
+                loginFormClass: "login-form-show",
+                registerFormClass: "register-form-hide",
+                logoutLinkClass: "logout-link-hide",
+                loggedAsClass: "logged-as-hide"
+            },
+            methods: {
+                toggleDisplay(){
+                    this.visible = (this.visible) ? false : true
+                },
+                login(){
+                    this.logged = false
+                    console.log(this.user);
+                    this.profiles.forEach(profile => {
+                        if ((profile.email == this.user.email) && (profile.password == this.user.password)){
+                            this.logged = true;
+                        }
+                    });
+                    if (!this.logged){
+                        this.message = 'Invalid credentials'
+                    } else {
+                        this.loginFormClass = "login-form-hide"
+                        this.logoutLinkClass = "logout-link-show"
+                        this.loggedAsClass = "logged-as-show"
+                        this.logged = true
+                        this.displayLoginForm = "login-link-hide"
+                        this.displayRegisterForm = "register-link-hide"
+                    }
+                },
+                register(){
+                    this.profiles.push(this.profile);
+                    this.registerFormClass = "register-form-hide"
+                    this.logoutLinkClass = "logout-link-show"
+                    this.loggedAsClass = "logged-as-show"
+                    this.logged = true
+                    console.log(this.profiles);
+                },
+                displayLoginForm(){
+                    this.loginFormClass = "login-form-show"
+                    this.registerFormClass = "register-form-hide"   
+                },
+                displayRegisterForm(){
+                    this.registerFormClass = "register-form-show"
+                    this.loginFormClass = "login-form-hide"
+                },
+                logout(){
+                    this.logged = false;
+                    this.loginFormClass = "login-form-show"
+                    this.loggedAsClass = "logged-as-hide"
+                    this.logoutLinkClass = "logout-link-hide"
+                    console.log("logout");
+                },
+            },
+            computed:{
+                totalAmount(){
+                    let result = 0
+                    this.products.forEach(product => {
+                        result += product.price
+                });
+                return result
+           },
+         },
+     });
+    </script>
+</body>
+</html>
